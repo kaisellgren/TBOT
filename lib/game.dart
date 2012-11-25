@@ -67,7 +67,22 @@ class Game {
       ..y = 320.0
       ..canControl = true;
 
+    s.initialize();
+
     components.add(s);
+
+    // Spawn some AI soldiers.
+    for (var i = 0; i < 10; i++) {
+      var s = new Soldier(this)
+        ..model = content.resources['soldier']
+        ..x = random.nextInt(width).toDouble()
+        ..y = random.nextInt(height).toDouble()
+        ..rotation = random.nextInt(360).toDouble();
+
+      s.initialize();
+
+      components.add(s);
+    }
 
     // Spawn some bushes.
     for (var i = 0; i < 100; i++) {
@@ -76,7 +91,8 @@ class Game {
       var b = new Bush(this)
         ..model = content.resources['bush0$number']
         ..x = random.nextInt(width).toDouble()
-        ..y = random.nextInt(height).toDouble();
+        ..y = random.nextInt(height).toDouble()
+        ..rotation = random.nextInt(360).toDouble();
 
       components.add(b);
     }

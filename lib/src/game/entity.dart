@@ -36,4 +36,8 @@ class Entity extends DrawableComponent {
   update() {
 
   }
+
+  initialize() {
+
+  }
 }
