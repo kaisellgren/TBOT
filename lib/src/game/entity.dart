@@ -3,6 +3,7 @@ part of tbot;
 class Entity extends DrawableComponent {
   double x, y;
   double originX, originY;
+  double speed = 0.0;
 
   /**
    * Rotation in radians.
@@ -10,6 +11,7 @@ class Entity extends DrawableComponent {
   double rotation = 0.0;
 
   ImageElement _model;
+
   get model => _model;
   set model(model) {
     _model = model;

@@ -9,7 +9,9 @@ part 'src/engine/component.dart';
 part 'src/engine/drawable_component.dart';
 part 'src/engine/content_manager.dart';
 part 'src/engine/mouse.dart';
+part 'src/engine/keyboard.dart';
 part 'src/engine/util.dart';
+
 part 'src/game/entity.dart';
 part 'src/game/soldier.dart';
 
@@ -20,6 +22,7 @@ class Game {
   CanvasRenderingContext2D context;
   ServiceManager services;
   Mouse mouse;
+  Keyboard keyboard;
 
   // Game level size.
   int width = 2048;
@@ -33,6 +36,7 @@ class Game {
     content = new ContentManager(this);
     services = new ServiceManager(this);
     mouse = new Mouse(this);
+    keyboard = new Keyboard(this);
 
     loadContent();
   }
