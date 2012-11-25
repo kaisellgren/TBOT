@@ -1,7 +1,7 @@
 part of tbot;
 
 class Entity extends DrawableComponent {
-  double x, y;
+  double x = 0.0, y = 0.0;
   double originX, originY;
   double speed = 0.0;
 
@@ -28,8 +28,12 @@ class Entity extends DrawableComponent {
 
     context.translate(x + originX, y + originY);
     context.rotate(rotation);
-    context.drawImage(game.content.resources['soldier'], -originX, -originY);
+    context.drawImage(_model, -originX, -originY);
     context.rotate(-rotation);
     context.translate(-x - originX, -y - originY);
+  }
+
+  update() {
+
   }
 }

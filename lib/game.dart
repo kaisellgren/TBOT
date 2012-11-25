@@ -14,6 +14,7 @@ part 'src/engine/util.dart';
 
 part 'src/game/entity.dart';
 part 'src/game/soldier.dart';
+part 'src/game/bush.dart';
 
 class Game {
   List<Component> components = [];
@@ -23,6 +24,7 @@ class Game {
   ServiceManager services;
   Mouse mouse;
   Keyboard keyboard;
+  Random random = new Random();
 
   // Game level size.
   int width = 2048;
@@ -48,7 +50,12 @@ class Game {
     content.loadAll({
       'background': 'images/background2.jpg',
       'soldier': 'images/soldier.png',
-      'base': 'images/base.png'
+      'base': 'images/base.png',
+      'bush01': 'images/bushes/bush01.png',
+      'bush02': 'images/bushes/bush02.png',
+      'bush03': 'images/bushes/bush03.png',
+      'bush04': 'images/bushes/bush04.png',
+      'bush05': 'images/bushes/bush05.png'
     }).then((s) => run());
   }
 
@@ -61,6 +68,18 @@ class Game {
       ..canControl = true;
 
     components.add(s);
+
+    // Spawn some bushes.
+    for (var i = 0; i < 100; i++) {
+      var number = 1 + random.nextInt(5);
+
+      var b = new Bush(this)
+        ..model = content.resources['bush0$number']
+        ..x = random.nextInt(width).toDouble()
+        ..y = random.nextInt(height).toDouble();
+
+      components.add(b);
+    }
 
     // The main thread draws.
     window.requestAnimationFrame(draw);
