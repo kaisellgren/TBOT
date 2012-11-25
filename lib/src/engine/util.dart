@@ -19,6 +19,7 @@ double degToRad(double degrees) {
  */
 double getPointDirection(double x1, double y1, double x2, double y2) => atan2(y2 - y1, x2 - x1);
 
-double getDistanceToPoint(double x1, double y1, double x2, double y2) {
-  return sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
-}
+/**
+ * Returns the distance between the two given points.
+ */
+double getDistanceToPoint(double x1, double y1, double x2, double y2) => sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
