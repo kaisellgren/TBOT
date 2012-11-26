@@ -1,2 +1,5 @@
 packages/
 /lib/docs
+*.js
+*.deps
+*.map

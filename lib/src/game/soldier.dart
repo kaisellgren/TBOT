@@ -23,6 +23,16 @@ class Soldier extends Entity {
 
       var distance = getDistanceToPoint(x + originX, y + originY, game.mouse.x, game.mouse.y);
 
+      // Shoot upon left click.
+      if (game.mouse.isPressed(0)) {
+        var b = new Bullet(game)
+          ..rotation = rotation
+          ..x = x + originX
+          ..y = y + originY;
+
+        game.components.add(b);
+      }
+
       // Move forward
       if (game.keyboard.isPressed(KeyCode.W)) {
         if (distance > 16) {

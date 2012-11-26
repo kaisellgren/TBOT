@@ -2,7 +2,7 @@ part of tbot;
 
 class Entity extends DrawableComponent {
   double x = 0.0, y = 0.0;
-  double originX, originY;
+  double originX = 0.0, originY = 0.0;
   double speed = 0.0;
 
   /**
@@ -26,11 +26,14 @@ class Entity extends DrawableComponent {
     //CanvasRenderingContext2D context = game.services.get('context');
     var context = game.context;
 
-    context.translate(x + originX, y + originY);
-    context.rotate(rotation);
-    context.drawImage(_model, -originX, -originY);
-    context.rotate(-rotation);
-    context.translate(-x - originX, -y - originY);
+    // Draw model if set.
+    if (_model != null) {
+      context.translate(x + originX, y + originY);
+      context.rotate(rotation);
+      context.drawImage(_model, -originX, -originY);
+      context.rotate(-rotation);
+      context.translate(-x - originX, -y - originY);
+    }
   }
 
   update() {

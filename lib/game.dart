@@ -11,10 +11,12 @@ part 'src/engine/content_manager.dart';
 part 'src/engine/mouse.dart';
 part 'src/engine/keyboard.dart';
 part 'src/engine/util.dart';
+part 'src/engine/fps_counter.dart';
 
 part 'src/game/entity.dart';
 part 'src/game/soldier.dart';
 part 'src/game/bush.dart';
+part 'src/game/bullet.dart';
 
 class Game {
   List<Component> components = [];
@@ -102,6 +104,9 @@ class Game {
 
     // Another thread for logic computation.
     // TODO: !
+
+    // Add FPS counter.
+    components.add(new FpsCounter(this));
   }
 
   /**

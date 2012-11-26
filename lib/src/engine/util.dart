@@ -17,9 +17,9 @@ double degToRad(num degrees) {
 /**
  * Returns the direction (in radians) from point to another.
  */
-double getPointDirection(num x1, num y1, num x2, num y2) => atan2(y2 - y1, x2 - x1);
+double getPointDirection(num x1, num y1, num x2, num y2) => atan2(y2 - y1, x2 - x1).toDouble();
 
 /**
  * Returns the distance between the two given points.
  */
-double getDistanceToPoint(num x1, num y1, num x2, num y2) => sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+double getDistanceToPoint(num x1, num y1, num x2, num y2) => sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)).toDouble();
