@@ -1,15 +1,38 @@
 part of tbot;
 
 class Bullet extends Entity {
-  double speed = 8.0;
+  double speed = 16.0;
+  int width = 4, height = 4;
 
-  Bullet(game) : super(game);
+  Bullet({game, rotation, x, y}) : super(game) {
+    var r = new Random();
+
+    speed -= r.nextDouble();
+    speed += r.nextDouble();
+
+    rotation += degToRad(r.nextInt(5));
+    rotation -= degToRad(r.nextInt(5));
+
+    this.rotation = rotation;
+    this.x = x;
+    this.y = y;
+  }
 
   update() {
     super.update();
 
     x += cos(rotation) * speed;
     y += sin(rotation) * speed;
+
+    // Check if we hit anything!
+    game.components.forEach((c) {
+      if (c is Soldier) {
+        if (collidesWith(c)) {
+          //c.health -= 20;
+          //game.removeComponent(this);
+        }
+      }
+    });
   }
 
   draw() {

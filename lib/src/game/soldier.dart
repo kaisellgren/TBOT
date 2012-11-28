@@ -3,6 +3,17 @@ part of tbot;
 class Soldier extends Entity {
   bool canControl = false;
   double speed = 1.5;
+  int lastTimeShot = 0;
+
+  int _health = 100;
+  set health(int health) {
+    _health = health;
+
+    // If I'm dead, remove me please!
+    if (health <= 0)
+      game.removeComponent(this);
+  }
+  get health => _health;
 
   var aiChangeDirectionIn = 0;
   var aiCurrentDirection = 0;
@@ -13,6 +24,8 @@ class Soldier extends Entity {
   initialize() {
     originX = 15.0;
     originY = 30.0;
+    bulletOriginX = 56.0;
+    bulletOriginY = 32.0;
   }
 
   update() {
@@ -25,12 +38,20 @@ class Soldier extends Entity {
 
       // Shoot upon left click.
       if (game.mouse.isPressed(0)) {
-        var b = new Bullet(game)
-          ..rotation = rotation
-          ..x = x + originX
-          ..y = y + originY;
+        // Only shoot once in 500ms.
+        var now = new Date.now().millisecondsSinceEpoch;
+        if (now - lastTimeShot > 500) {
+          var b = new Bullet(
+            game: game,
+            rotation: rotation,
+            x: x + originX + (originX - bulletOriginX) * cos(rotation),
+            y: y + originY + (originY - bulletOriginY) * sin(rotation)
+          );
 
-        game.components.add(b);
+          game.components.add(b);
+
+          lastTimeShot = now;
+        }
       }
 
       // Move forward

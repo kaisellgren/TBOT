@@ -5,6 +5,7 @@ part of tbot;
  */
 abstract class DrawableComponent extends Component {
   bool hidden = false;
+  double opacity = 1.0;
 
   void loadContent();
   void draw();

@@ -17,6 +17,7 @@ part 'src/game/entity.dart';
 part 'src/game/soldier.dart';
 part 'src/game/bush.dart';
 part 'src/game/bullet.dart';
+part 'src/game/clouds.dart';
 
 class Game {
   List<Component> components = [];
@@ -57,8 +58,17 @@ class Game {
       'bush02': 'images/bushes/bush02.png',
       'bush03': 'images/bushes/bush03.png',
       'bush04': 'images/bushes/bush04.png',
-      'bush05': 'images/bushes/bush05.png'
+      'bush05': 'images/bushes/bush05.png',
+      'clouds': 'images/clouds.png',
+      'cloudsShadow': 'images/cloudsShadow.png',
     }).then((s) => run());
+  }
+
+  /**
+   * Removes the given component [c] from the set of components in this game.
+   */
+  removeComponent(Component c) {
+    components.removeAt(components.indexOf(c));
   }
 
   run() {
@@ -77,8 +87,8 @@ class Game {
     for (var i = 0; i < 10; i++) {
       var s = new Soldier(this)
         ..model = content.resources['soldier']
-        ..x = random.nextInt(width).toDouble()
-        ..y = random.nextInt(height).toDouble()
+        ..x = random.nextInt(1024).toDouble()
+        ..y = random.nextInt(800).toDouble()
         ..rotation = random.nextInt(360).toDouble();
 
       s.initialize();
@@ -107,6 +117,14 @@ class Game {
 
     // Add FPS counter.
     components.add(new FpsCounter(this));
+
+    // Add a soldier.
+    var c = new Clouds(this)
+      ..model = content.resources['clouds']
+      ..modelShadow = content.resources['cloudsShadow']
+      ..opacity = 0.2;
+
+    components.add(c);
   }
 
   /**
