@@ -8,6 +8,7 @@ part of tbot;
 abstract class Component {
   Game game;
   bool disabled = false;
+  int zIndex = 0;
 
   void update();
 

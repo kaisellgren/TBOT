@@ -1,6 +1,7 @@
 part of tbot;
 
 class Bullet extends Entity {
+  int zIndex = -5;
   double speed = 16.0;
   int width = 4, height = 4;
 
@@ -25,11 +26,11 @@ class Bullet extends Entity {
     y += sin(rotation) * speed;
 
     // Check if we hit anything!
-    game.components.forEach((c) {
+    game._components.forEach((c) {
       if (c is Soldier) {
         if (collidesWith(c)) {
-          //c.health -= 20;
-          //game.removeComponent(this);
+          c.health -= (15 + game.random.nextInt(5));
+          game.removeComponent(this);
         }
       }
     });

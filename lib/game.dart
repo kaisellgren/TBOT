@@ -20,7 +20,7 @@ part 'src/game/bullet.dart';
 part 'src/game/clouds.dart';
 
 class Game {
-  List<Component> components = [];
+  List<Component> _components = [];
   ContentManager content;
   CanvasElement canvas;
   CanvasRenderingContext2D context;
@@ -60,7 +60,6 @@ class Game {
       'bush04': 'images/bushes/bush04.png',
       'bush05': 'images/bushes/bush05.png',
       'clouds': 'images/clouds.png',
-      'cloudsShadow': 'images/cloudsShadow.png',
     }).then((s) => run());
   }
 
@@ -68,7 +67,21 @@ class Game {
    * Removes the given component [c] from the set of components in this game.
    */
   removeComponent(Component c) {
-    components.removeAt(components.indexOf(c));
+    _components.removeAt(_components.indexOf(c));
+  }
+
+  addComponent(Component c) {
+    _components.add(c);
+
+    // TODO: Causes flickering!
+    _components.sort((a, b) {
+      if (a.zIndex < b.zIndex)
+        return -1;
+      else if (a.zIndex > b.zIndex)
+        return 1;
+      else
+        return 0;
+    });
   }
 
   run() {
@@ -77,27 +90,29 @@ class Game {
       ..model = content.resources['soldier']
       ..x = 640.0
       ..y = 320.0
+      ..team = 0
       ..canControl = true;
 
     s.initialize();
 
-    components.add(s);
+    addComponent(s);
 
     // Spawn some AI soldiers.
     for (var i = 0; i < 10; i++) {
       var s = new Soldier(this)
         ..model = content.resources['soldier']
-        ..x = random.nextInt(1024).toDouble()
-        ..y = random.nextInt(800).toDouble()
+        ..x = random.nextInt(2048).toDouble()
+        ..y = random.nextInt(2048).toDouble()
+        ..team = random.nextInt(2)
         ..rotation = random.nextInt(360).toDouble();
 
       s.initialize();
 
-      components.add(s);
+      addComponent(s);
     }
 
     // Spawn some bushes.
-    for (var i = 0; i < 100; i++) {
+    for (var i = 0; i < 50; i++) {
       var number = 1 + random.nextInt(5);
 
       var b = new Bush(this)
@@ -106,7 +121,7 @@ class Game {
         ..y = random.nextInt(height).toDouble()
         ..rotation = random.nextInt(360).toDouble();
 
-      components.add(b);
+      addComponent(b);
     }
 
     // The main thread draws.
@@ -116,15 +131,13 @@ class Game {
     // TODO: !
 
     // Add FPS counter.
-    components.add(new FpsCounter(this));
+    addComponent(new FpsCounter(this));
 
-    // Add a soldier.
+    // Add clouds.
     var c = new Clouds(this)
-      ..model = content.resources['clouds']
-      ..modelShadow = content.resources['cloudsShadow']
-      ..opacity = 0.2;
+      ..model = content.resources['clouds'];
 
-    components.add(c);
+    addComponent(c);
   }
 
   /**
@@ -141,7 +154,7 @@ class Game {
     }
 
     // Draw all drawable game components.
-    components.forEach((Component c) {
+    _components.forEach((Component c) {
       c.update(); // TODO: Temporarily update() here on main thread!
 
       if (c is DrawableComponent)
