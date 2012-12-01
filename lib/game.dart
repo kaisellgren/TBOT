@@ -8,6 +8,7 @@ part 'src/engine/service_manager.dart';
 part 'src/engine/component.dart';
 part 'src/engine/drawable_component.dart';
 part 'src/engine/content_manager.dart';
+part 'src/engine/camera.dart';
 part 'src/engine/mouse.dart';
 part 'src/engine/keyboard.dart';
 part 'src/engine/util.dart';
@@ -25,6 +26,7 @@ class Game {
   CanvasElement canvas;
   CanvasRenderingContext2D context;
   ServiceManager services;
+  Camera camera;
   Mouse mouse;
   Keyboard keyboard;
   Random random = new Random();
@@ -40,6 +42,7 @@ class Game {
     context = canvas.getContext('2d');
     content = new ContentManager(this);
     services = new ServiceManager(this);
+    camera = new Camera(this);
     mouse = new Mouse(this);
     keyboard = new Keyboard(this);
 
