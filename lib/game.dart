@@ -163,7 +163,7 @@ class Game {
       if (c is DrawableComponent)
         c.draw();
     });
-
+    camera.follow();
     window.requestAnimationFrame(draw);
   }
 }
