@@ -10,9 +10,7 @@ main() {
     canvas.height = window.innerHeight;
   }
 
-  window.on.resize.add((e) {
-    maximizeCanvas();
-  });
+  window.onResize.listen((e) => maximizeCanvas());
 
   maximizeCanvas();
 

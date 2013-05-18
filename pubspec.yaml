@@ -1,6 +1,4 @@
 name:  tbos
 description:  A sample application
-
-#dependencies:
-#  js: any
-#  unittest: { sdk: unittest }
+dependencies:
+  browser: 0.4.3+1

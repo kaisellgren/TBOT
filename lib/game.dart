@@ -3,6 +3,8 @@ library tbot;
 import 'dart:html';
 import 'dart:math';
 import 'dart:isolate';
+import 'dart:collection';
+import 'dart:async';
 
 part 'src/engine/service_manager.dart';
 part 'src/engine/component.dart';
@@ -66,25 +68,38 @@ class Game {
     }).then((s) => run());
   }
 
+  List<Component> _componentsToRemove = [];
+  List<Component> _componentsToAdd = [];
+
   /**
    * Removes the given component [c] from the set of components in this game.
    */
-  removeComponent(Component c) {
-    _components.removeAt(_components.indexOf(c));
-  }
+  removeComponent(Component c) => _componentsToRemove.add(c);
 
-  addComponent(Component c) {
-    _components.add(c);
+  addComponent(Component c) => _componentsToAdd.add(c);
 
-    // TODO: Causes flickering!
-    _components.sort((a, b) {
-      if (a.zIndex < b.zIndex)
-        return -1;
-      else if (a.zIndex > b.zIndex)
-        return 1;
-      else
-        return 0;
+  _updateComponents() {
+    _componentsToRemove.forEach((Component c) {
+      var index = _components.indexOf(c);
+      if (index != -1) _components.removeAt(index);
     });
+
+    _componentsToAdd.forEach((Component c) {
+      _components.add(c);
+
+      // TODO: Causes flickering!
+      _components.sort((a, b) {
+        if (a.zIndex < b.zIndex)
+          return -1;
+        else if (a.zIndex > b.zIndex)
+          return 1;
+        else
+          return 0;
+      });
+    });
+
+    _componentsToRemove.clear();
+    _componentsToAdd.clear();
   }
 
   run() {
@@ -163,7 +178,11 @@ class Game {
       if (c is DrawableComponent)
         c.draw();
     });
+
     camera.follow();
+
+    _updateComponents();
+
     window.requestAnimationFrame(draw);
   }
 }

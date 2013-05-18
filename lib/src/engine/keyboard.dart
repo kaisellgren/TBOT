@@ -5,13 +5,13 @@ class Keyboard {
   HashMap<int, int> _keys = new HashMap<int, int>();
 
   Keyboard(this.game) {
-    window.on.keyDown.add((KeyboardEvent e) {
+    window.onKeyDown.listen((KeyboardEvent e) {
       // If the key is not set yet, set it with a timestamp.
       if (!_keys.containsKey(e.keyCode))
         _keys[e.keyCode] = e.timeStamp;
     });
 
-    window.on.keyUp.add((KeyboardEvent e) {
+    window.onKeyUp.listen((KeyboardEvent e) {
       _keys.remove(e.keyCode);
     });
   }

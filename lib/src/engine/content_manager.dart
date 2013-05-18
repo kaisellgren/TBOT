@@ -23,7 +23,7 @@ class ContentManager {
     resources.forEach((id, path) {
       var image = new ImageElement(src: path);
       this.resources[id] = image;
-      image.on.load.add(isDone);
+      image.onLoad.listen(isDone);
     });
 
     return completer.future;

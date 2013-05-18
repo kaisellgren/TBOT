@@ -1,7 +1,7 @@
 part of tbot;
 
 class FpsCounter extends DrawableComponent {
-  int lastTime = new Date.now().millisecondsSinceEpoch;
+  int lastTime = new DateTime.now().millisecondsSinceEpoch;
   int ticks = 30;
   int fps = 0;
 
@@ -14,7 +14,7 @@ class FpsCounter extends DrawableComponent {
   draw() {
     ticks++;
     if (ticks > 30) {
-      var now = new Date.now().millisecondsSinceEpoch;
+      var now = new DateTime.now().millisecondsSinceEpoch;
 
       var result = ((now - lastTime) ~/ 30);
       if (result > 0)

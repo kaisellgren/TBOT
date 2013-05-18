@@ -44,7 +44,7 @@ class Soldier extends Entity {
       // Shoot upon left click.
       if (game.mouse.isPressed(0)) {
         // Only shoot once in 500ms.
-        var now = new Date.now().millisecondsSinceEpoch;
+        var now = new DateTime.now().millisecondsSinceEpoch;
         if (now - lastTimeShot > 500) {
           var b = new Bullet(
             game: game,
@@ -162,7 +162,7 @@ class Soldier extends Entity {
           rotation = getPointDirection(x + originX, y + originY, aiTarget.x + aiTarget.originX, aiTarget.y + aiTarget.originY);
 
           // Only shoot once in 500ms.
-          var now = new Date.now().millisecondsSinceEpoch;
+          var now = new DateTime.now().millisecondsSinceEpoch;
           if (now - lastTimeShot > 500) {
             var b = new Bullet(
               game: game,
