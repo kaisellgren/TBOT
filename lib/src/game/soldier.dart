@@ -3,6 +3,7 @@ part of tbot;
 class Soldier extends Entity {
   bool canControl = false;
   double speed = 1.5;
+  double sprintSpeed = 3.0;
   int lastTimeShot = 0;
   double bulletOriginRotation = 0.0;
   int team = -1;
@@ -49,10 +50,9 @@ class Soldier extends Entity {
           var b = new Bullet(
             game: game,
             rotation: rotation,
-            //x: x + originX + (bulletOriginX/* - originX*/) * cos(rotation - bulletOriginRotation),
-            //y: y + originY + (bulletOriginY/* - originY*/) * sin(rotation - bulletOriginRotation)
             x: x + originX + bulletOriginX * cos(rotation),
-            y: y + originY + bulletOriginY * sin(rotation)
+            y: y + originY + bulletOriginY * sin(rotation),
+            createdBy: this
           );
 
           game.addComponent(b);
@@ -101,14 +101,17 @@ class Soldier extends Entity {
     else {
       // Detect others.
       if (aiTarget == null) {
+        // Find closest to attack.
+        var closest = 99999;
         game._components.forEach((Component c) {
           if (c is Soldier && c != this) {
             // Attack only enemies.
             if (c.team != team) {
               var distance = getDistanceToPoint(x + originX, y + originY, c.x + c.originX, c.y + c.originY);
 
-              if (distance < 512) {
+              if (distance < 1024 && distance < closest) {
                 aiTarget = c;
+                closest = distance;
               }
             }
           }
@@ -147,35 +150,49 @@ class Soldier extends Entity {
 
         // Move.
         if (aiIsStanding < 0) {
-          x += cos(rotation) * speed;
-          y += sin(rotation) * speed;
+          var addX = cos(rotation) * speed;
+          var addY = sin(rotation) * speed;
+
+          if (x + addX >= 0 && x + addX <= game.width - width) x += addX;
+
+          if (y + addY >= 0 && y + addY <= game.height - height) y += addY;
         }
 
         aiIsStanding--;
       }
 
       // Shoot targets!
-      if (aiTarget != null) {
+      else {
         if (aiTarget.health <= 0)
           aiTarget = null;
         else {
           rotation = getPointDirection(x + originX, y + originY, aiTarget.x + aiTarget.originX, aiTarget.y + aiTarget.originY);
 
-          // Only shoot once in 500ms.
-          var now = new DateTime.now().millisecondsSinceEpoch;
-          if (now - lastTimeShot > 500) {
-            var b = new Bullet(
-              game: game,
-              rotation: rotation,
-              //x: x + originX + (bulletOriginX/* - originX*/) * cos(rotation - bulletOriginRotation),
-              //y: y + originY + (bulletOriginY/* - originY*/) * sin(rotation - bulletOriginRotation)
-              x: x + originX + bulletOriginX * cos(rotation),
-              y: y + originY + bulletOriginY * sin(rotation)
-            );
+          var distance = getDistanceToPoint(x + originX, y + originY, aiTarget.x + aiTarget.originX, aiTarget.y + aiTarget.originY);
 
-            game.addComponent(b);
+          // Shoot if close enough.
+          if (distance < 512) {
+            // Only shoot once in 500ms.
+            var now = new DateTime.now().millisecondsSinceEpoch;
+            if (now - lastTimeShot > 500) {
+              var b = new Bullet(
+                game: game,
+                rotation: rotation,
+                x: x + originX + bulletOriginX * cos(rotation),
+                y: y + originY + bulletOriginY * sin(rotation),
+                createdBy: this
+              );
 
-            lastTimeShot = now;
+              game.addComponent(b);
+
+              lastTimeShot = now;
+            }
+          } else {
+            // Move towards target.
+            var addX = cos(rotation) * sprintSpeed;
+            var addY = sin(rotation) * sprintSpeed;
+            x += addX;
+            y += addY;
           }
         }
       }

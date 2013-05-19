@@ -9,7 +9,7 @@ class ContentManager {
   /**
    * Loads all given resources.
    */
-  Future<bool> loadAll(Map resources) {
+  Future loadAll(Map resources) {
     var counter = 0;
     var completer = new Completer();
 
@@ -17,7 +17,7 @@ class ContentManager {
       counter++;
 
       if (counter == resources.length)
-        completer.complete(true);
+        completer.complete();
     }
 
     resources.forEach((id, path) {

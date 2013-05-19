@@ -2,10 +2,12 @@ part of tbot;
 
 class Bullet extends Entity {
   int zIndex = -5;
-  double speed = 16.0;
+  double speed = 32.0;
   int width = 4, height = 4;
 
-  Bullet({game, rotation, x, y}) : super(game) {
+  Entity createdBy;
+
+  Bullet({Game game, rotation, x, y, Entity this.createdBy}) : super(game) {
     var r = new Random();
 
     speed -= r.nextDouble();
@@ -25,11 +27,20 @@ class Bullet extends Entity {
     x += cos(rotation) * speed;
     y += sin(rotation) * speed;
 
+    if (x < 0 || y < 0 || x > game.width || y > game.height) {
+      game.removeComponent(this);
+      return;
+    }
+
     // Check if we hit anything!
     game._components.forEach((c) {
       if (c is Soldier) {
         if (collidesWith(c)) {
           c.health -= (15 + game.random.nextInt(5));
+
+          // TODO: This should not be here.
+          if (c.canControl == false && c.team != createdBy.team) c.aiTarget = createdBy;
+
           game.removeComponent(this);
         }
       }

@@ -34,10 +34,10 @@ class Game {
   Random random = new Random();
 
   // Game level size.
-  int width = 2048;
-  int height = 2048;
+  int width = 4096;
+  int height = 4096;
 
-  // TODO: Implement Camera.
+  get componentCount => _components.length;
 
   Game(CanvasElement canvas) {
     this.canvas = canvas;
@@ -65,11 +65,14 @@ class Game {
       'bush04': 'images/bushes/bush04.png',
       'bush05': 'images/bushes/bush05.png',
       'clouds': 'images/clouds.png',
-    }).then((s) => run());
+    }).then((_) => run());
   }
 
   List<Component> _componentsToRemove = [];
   List<Component> _componentsToAdd = [];
+
+  get team0players => _components.where((c) => c is Soldier && c.team == 0).toList().length;
+  get team1players => _components.where((c) => c is Soldier && c.team == 1).toList().length;
 
   /**
    * Removes the given component [c] from the set of components in this game.
@@ -87,8 +90,10 @@ class Game {
     _componentsToAdd.forEach((Component c) {
       _components.add(c);
 
-      // TODO: Causes flickering!
+      // TODO: Let's find a better way
       _components.sort((a, b) {
+        if (a is! DrawableComponent || b is! DrawableComponent) return 0;
+
         if (a.zIndex < b.zIndex)
           return -1;
         else if (a.zIndex > b.zIndex)
@@ -116,13 +121,23 @@ class Game {
     addComponent(s);
 
     // Spawn some AI soldiers.
-    for (var i = 0; i < 10; i++) {
+    for (var i = 0; i < 1000; i++) {
+      var team = i < 500 ? 0 : 1;
+
       var s = new Soldier(this)
         ..model = content.resources['soldier']
-        ..x = random.nextInt(2048).toDouble()
-        ..y = random.nextInt(2048).toDouble()
-        ..team = random.nextInt(2)
+        ..team = team
         ..rotation = random.nextInt(360).toDouble();
+
+      if (team == 0) {
+        s
+          ..x = random.nextInt(2048).toDouble()
+          ..y = random.nextInt(2048).toDouble();
+      } else {
+        s
+          ..x = 2048 + random.nextInt(2048).toDouble()
+          ..y = 2048 + random.nextInt(2048).toDouble();
+      }
 
       s.initialize();
 
@@ -145,8 +160,7 @@ class Game {
     // The main thread draws.
     window.requestAnimationFrame(draw);
 
-    // Another thread for logic computation.
-    // TODO: !
+    // TODO: Another thread for logic computation.
 
     // Add FPS counter.
     addComponent(new FpsCounter(this));
@@ -156,6 +170,10 @@ class Game {
       ..model = content.resources['clouds'];
 
     addComponent(c);
+
+    addComponent(camera);
+
+    camera.goTo(1200, 1600);
   }
 
   /**
@@ -165,8 +183,8 @@ class Game {
     context.clearRect(0, 0, canvas.width, canvas.height);
 
     // Draw the repeating background.
-    for (var x = 0; x < width; x += 512) {
-      for (var y = 0; y < height; y += 512) {
+    for (var x = 0; x <= width; x += 512) {
+      for (var y = 0; y <= height; y += 512) {
         context.drawImage(content.resources['background'], x, y);
       }
     }
@@ -178,8 +196,6 @@ class Game {
       if (c is DrawableComponent)
         c.draw();
     });
-
-    camera.follow();
 
     _updateComponents();
 
